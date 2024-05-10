@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { debuglog } from 'node:util'
+import { Facade } from '@athenna/ioc'
+import type { ValidatorImpl } from '#src/validator/ValidatorImpl'
 
-export const debug = debuglog('athenna:validator')
+export const Validate = Facade.createFor<ValidatorImpl>(
+  'Athenna/Core/Validator'
+)

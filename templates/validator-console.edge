@@ -1,0 +1,12 @@
+import { Validator, BaseValidator } from '@athenna/validator'
+
+@Validator()
+export class {{ namePascal }} extends BaseValidator {
+  public schema = this.validator.object({
+    name: this.validator.string()
+  })
+
+  public async handle(data: any) {
+    await this.validate(data)
+  }
+}

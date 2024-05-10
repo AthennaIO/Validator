@@ -7,6 +7,10 @@
  * file that was distributed with this source code.
  */
 
-import { debuglog } from 'node:util'
+import type { FieldContext } from '#src/types'
 
-export const debug = debuglog('athenna:validator')
+export type ExtendHandlerType = (
+  value: unknown,
+  options: any,
+  field: FieldContext
+) => any | Promise<any>

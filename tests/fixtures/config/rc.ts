@@ -7,6 +7,10 @@
  * file that was distributed with this source code.
  */
 
-import { debuglog } from 'node:util'
+import { Path, File } from '@athenna/common'
 
-export const debug = debuglog('athenna:validator')
+const athennaRc = new File(Path.pwd('package.json')).getContentAsJsonSync().athenna
+
+athennaRc.isInPackageJson = true
+
+export default athennaRc

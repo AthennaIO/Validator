@@ -1,5 +1,5 @@
 /**
- * @athenna/template
+ * @athenna/validator
  *
  * (c) João Lenon <lenon@athenna.io>
  *

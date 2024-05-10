@@ -7,6 +7,4 @@
  * file that was distributed with this source code.
  */
 
-import { debuglog } from 'node:util'
-
-export const debug = debuglog('athenna:validator')
+export class BaseValidatorTest {}
