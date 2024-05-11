@@ -179,6 +179,10 @@
     ],
     "namedValidators": {
       "hello": "#tests/fixtures/validators/HelloValidator"
+    },
+    "templates": {
+      "validator-http": "./templates/validator-http.edge",
+      "validator-console": "./templates/validator-console.edge"
     }
   }
 }

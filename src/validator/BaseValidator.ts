@@ -16,7 +16,7 @@ export abstract class BaseValidator {
   public abstract schema: SchemaTypes
   public abstract handle(data: any): Promise<void>
 
-  public validate(data: any) {
+  public async validate(data: any) {
     return this.validator.validate({ schema: this.schema, data })
   }
 }

@@ -27,8 +27,20 @@ export default class ValidatorAnnotationTest extends BaseTest {
 
   @Test()
   @Cleanup(() => ioc.reconstruct())
-  public async shouldNotReRegisterTheValidatorIfItIsAlreadyRegisteredInTheServiceContainer({ assert }: Context) {
+  public async shouldNotReRegisterTheValidatorAliasIfItIsAlreadyRegisteredInTheServiceContainer({ assert }: Context) {
     ioc.singleton('App/Validators/ProductValidator', () => {})
+
+    const ProductValidator = await this.import('#tests/fixtures/validators/ProductValidator')
+
+    assert.isFalse(Annotation.isAnnotated(ProductValidator))
+  }
+
+  @Test()
+  @Cleanup(() => ioc.reconstruct())
+  public async shouldNotReRegisterTheValidatorNamedAliasIfItIsAlreadyRegisteredInTheServiceContainer({
+    assert
+  }: Context) {
+    ioc.singleton('App/Validators/Names/productValidator', () => {})
 
     const ProductValidator = await this.import('#tests/fixtures/validators/ProductValidator')
 

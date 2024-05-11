@@ -31,10 +31,10 @@ export class ValidatorImpl {
    * build your validation schemas:
    *
    * ```ts
-   * const schema = Validator.schema.object({
-   *   name: Validator.schema.string(),
-   *   email: Validator.schema.string().email(),
-   *   password: Validator.schema.string().minLength(8).maxLength(32).confirmed()
+   * const schema = Validate.schema.object({
+   *   name: Validate.schema.string(),
+   *   email: Validate.schema.string().email(),
+   *   password: Validate.schema.string().minLength(8).maxLength(32).confirmed()
    * })
    * ```
    */
@@ -47,7 +47,7 @@ export class ValidatorImpl {
    * validation rules:
    *
    * ```ts
-   * Validator.extend().string('unique', (value, options, field) => {
+   * Validate.extend().string('unique', (value, options, field) => {
    *   if (!options.column) {
    *     options.column = field.name as string
    *   }
