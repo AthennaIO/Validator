@@ -7,8 +7,11 @@
  * file that was distributed with this source code.
  */
 
+/* eslint-disable no-use-before-define */
+
 import {
   vine,
+  Vine,
   VineAccepted,
   VineAny,
   VineArray,
@@ -25,6 +28,21 @@ import {
 
 import type { ExtendHandlerType } from '#src/types'
 
+type ExtendReturnType = {
+  accepted: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  date: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  record: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  tuple: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  literal: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  array: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  any: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  string: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  number: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  enum: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  boolean: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+  object: (name: string, handler: ExtendHandlerType) => ValidatorImpl
+}
+
 export class ValidatorImpl {
   /**
    * This getter will return the vine instance to
@@ -38,7 +56,7 @@ export class ValidatorImpl {
    * })
    * ```
    */
-  public get schema() {
+  public get schema(): Vine {
     return vine
   }
 
@@ -63,7 +81,7 @@ export class ValidatorImpl {
    * })
    * ```
    */
-  public extend() {
+  public extend(): ExtendReturnType {
     const macro = (Vine: any, name: string, handler: any) => {
       Vine.macro(name, handler)
     }

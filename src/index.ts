@@ -8,6 +8,7 @@
  */
 
 import vine, {
+  Vine,
   VineAny,
   VineDate,
   VineEnum,
@@ -33,6 +34,7 @@ export * from '#src/exceptions/ValidationException'
 
 export {
   vine,
+  Vine,
   VineAny,
   VineDate,
   VineEnum,
