@@ -52,7 +52,7 @@
     "#tests": "./tests/index.js"
   },
   "dependencies": {
-    "@vinejs/vine": "^2.0.0"
+    "@vinejs/vine": "^2.1.0"
   },
   "devDependencies": {
     "@athenna/artisan": "^4.45.0",
