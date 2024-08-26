@@ -16,6 +16,8 @@ export default class MakeValidatorCommandTest extends BaseCommandTest {
   public async shouldBeAbleToCreateAValidatorFile({ assert, command }: Context) {
     const output = await command.run('make:validator TestValidator')
 
+    console.log(output.output)
+
     output.assertSucceeded()
     output.assertLogged('[ MAKING VALIDATOR ]')
     output.assertLogged('[  success  ] Validator "TestValidator" successfully created.')
