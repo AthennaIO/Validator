@@ -19,12 +19,12 @@ export default class MakeValidatorCommandTest extends BaseCommandTest {
     output.assertSucceeded()
     output.assertLogged('[ MAKING VALIDATOR ]')
     output.assertLogged('[  success  ] Validator "TestValidator" successfully created.')
-    output.assertLogged('[  success  ] Athenna RC updated: [ validators += "#app/validators/TestValidator" ]')
+    output.assertLogged('[  success  ] Athenna RC updated: [ validators += "#src/validators/TestValidator" ]')
 
     const { athenna } = await new File(Path.pwd('package.json')).getContentAsJson()
 
     assert.isTrue(await File.exists(Path.validators('TestValidator.ts')))
-    assert.containsSubset(athenna.validators, ['#app/validators/TestValidator'])
+    assert.containsSubset(athenna.validators, ['#src/validators/TestValidator'])
   }
 
   @Test()
