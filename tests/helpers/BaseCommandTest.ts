@@ -24,7 +24,6 @@ export class BaseCommandTest {
 
   @AfterEach()
   public async afterEach() {
-    await Folder.safeRemove(Path.app())
     await Folder.safeRemove(Path.fixtures('storage'))
 
     await new File(Path.pwd('package.json')).setContent(this.originalPackageJson)
