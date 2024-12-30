@@ -21,7 +21,8 @@ import vine, {
   VineLiteral,
   VineBoolean,
   VineAccepted,
-  SimpleErrorReporter
+  SimpleErrorReporter,
+  SimpleMessagesProvider
 } from '@vinejs/vine'
 
 export * from '#src/types'
@@ -32,7 +33,10 @@ export * from '#src/validator/ValidatorImpl'
 export * from '#src/providers/ValidatorProvider'
 export * from '#src/exceptions/ValidationException'
 
+const v = vine
+
 export {
+  v,
   vine,
   Vine,
   VineAny,
@@ -47,5 +51,6 @@ export {
   VineLiteral,
   VineBoolean,
   VineAccepted,
-  SimpleErrorReporter
+  SimpleErrorReporter,
+  SimpleMessagesProvider
 }

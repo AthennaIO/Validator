@@ -74,6 +74,41 @@ export class ValidatorImplTest {
   }
 
   @Test()
+  public async shouldBeAbleToValidateDataUsingValidateMethod({ assert }: Context) {
+    const validator = new ValidatorImpl()
+
+    const schema = validator.schema.object({
+      name: validator.schema.string()
+    })
+
+    const data = await validator.validate({ schema, data: { name: 'lenon' } })
+
+    assert.deepEqual(data, { name: 'lenon' })
+  }
+
+  @Test()
+  public async shouldBeAbleToExtendValidationMessages({ assert }: Context) {
+    assert.plan(1)
+    const validator = new ValidatorImpl()
+
+    validator.extend().messages({
+      required: 'The {{ field }} field is REQUIRED!'
+    })
+
+    const schema = validator.schema.object({
+      test: validator.schema.string()
+    })
+
+    try {
+      await validator.validate({ schema, data: { test: undefined } })
+    } catch (err) {
+      assert.deepEqual(err.details || err.messages, [
+        { message: 'The test field is REQUIRED!', rule: 'required', field: 'test' }
+      ])
+    }
+  }
+
+  @Test()
   public async shouldBeAbleToExtendTheAcceptedValidationSchema({ assert }: Context) {
     assert.plan(3)
 
@@ -89,7 +124,7 @@ export class ValidatorImplTest {
       test: validator.schema.accepted().test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: 'on' } })
+    await validator.validate({ schema, data: { test: 'on' } })
   }
 
   @Test()
@@ -108,7 +143,7 @@ export class ValidatorImplTest {
       test: validator.schema.date({ formats: ['YYYY/MM/DD'] }).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: '2024/12/09' } })
+    await validator.validate({ schema, data: { test: '2024/12/09' } })
   }
 
   @Test()
@@ -127,7 +162,7 @@ export class ValidatorImplTest {
       test: validator.schema.record(validator.schema.string()).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: { hello: 'world' } } })
+    await validator.validate({ schema, data: { test: { hello: 'world' } } })
   }
 
   @Test()
@@ -146,7 +181,7 @@ export class ValidatorImplTest {
       test: validator.schema.tuple([validator.schema.number(), validator.schema.string()]).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: [1, '2'] } })
+    await validator.validate({ schema, data: { test: [1, '2'] } })
   }
 
   @Test()
@@ -165,7 +200,7 @@ export class ValidatorImplTest {
       test: validator.schema.literal(true).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: true } })
+    await validator.validate({ schema, data: { test: true } })
   }
 
   @Test()
@@ -184,7 +219,7 @@ export class ValidatorImplTest {
       test: validator.schema.array(validator.schema.number()).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: [1, 2, 3] } })
+    await validator.validate({ schema, data: { test: [1, 2, 3] } })
   }
 
   @Test()
@@ -203,7 +238,7 @@ export class ValidatorImplTest {
       test: validator.schema.any().test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: [1, 2, 3] } })
+    await validator.validate({ schema, data: { test: [1, 2, 3] } })
   }
 
   @Test()
@@ -222,7 +257,7 @@ export class ValidatorImplTest {
       test: validator.schema.string().test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: '1' } })
+    await validator.validate({ schema, data: { test: '1' } })
   }
 
   @Test()
@@ -241,7 +276,7 @@ export class ValidatorImplTest {
       test: validator.schema.number().test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: 1 } })
+    await validator.validate({ schema, data: { test: 1 } })
   }
 
   @Test()
@@ -260,7 +295,7 @@ export class ValidatorImplTest {
       test: validator.schema.enum(['admin', 'customer']).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: 'admin' } })
+    await validator.validate({ schema, data: { test: 'admin' } })
   }
 
   @Test()
@@ -279,7 +314,7 @@ export class ValidatorImplTest {
       test: validator.schema.boolean().test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: true } })
+    await validator.validate({ schema, data: { test: true } })
   }
 
   @Test()
@@ -298,6 +333,6 @@ export class ValidatorImplTest {
       test: validator.schema.object({ hello: validator.schema.string() }).test({ opt1: 'opt1' })
     })
 
-    await validator.schema.validate({ schema, data: { test: { hello: 'world' } } })
+    await validator.validate({ schema, data: { test: { hello: 'world' } } })
   }
 }

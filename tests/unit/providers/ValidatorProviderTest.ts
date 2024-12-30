@@ -61,4 +61,28 @@ export class ValidatorProviderTest {
 
     assert.isTrue(ioc.has('App/Validators/Names/hello'))
   }
+
+  @Test()
+  public async shouldRegisterCustomUniqueValidation({ assert }: Context) {
+    ioc.singleton('Athenna/Core/Database', {})
+
+    const provider = new ValidatorProvider()
+
+    await provider.register()
+    await provider.boot()
+
+    assert.isDefined(Validate.schema.string().unique)
+  }
+
+  @Test()
+  public async shouldRegisterCustomExistsValidation({ assert }: Context) {
+    ioc.singleton('Athenna/Core/Database', {})
+
+    const provider = new ValidatorProvider()
+
+    await provider.register()
+    await provider.boot()
+
+    assert.isDefined(Validate.schema.string().exists)
+  }
 }
