@@ -1,6 +1,6 @@
 {
   "name": "@athenna/validator",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "description": "The Athenna validation solution. Built on top of VineJS.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
