@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { v } from '#src'
 import type { SchemaTypes } from '#src/types'
 import { Validate } from '#src/facades/Validate'
 
@@ -17,6 +18,6 @@ export abstract class BaseValidator {
   public abstract handle(data: any): Promise<void>
 
   public async validate(data: any) {
-    return this.validator.validate({ schema: this.schema, data })
+    return v.validate({ schema: this.schema, data })
   }
 }

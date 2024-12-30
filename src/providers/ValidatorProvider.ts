@@ -9,53 +9,18 @@
 
 import { sep } from 'node:path'
 import { Config } from '@athenna/config'
-import { Validate, SimpleErrorReporter } from '#src'
-import { Is, Exec, Module, Path } from '@athenna/common'
+import { SimpleErrorReporter } from '#src'
+import { Exec, Module, Path } from '@athenna/common'
 import { Annotation, ServiceProvider } from '@athenna/ioc'
 import { ValidatorImpl } from '#src/validator/ValidatorImpl'
+import type { UniqueOptions, ExistsOptions } from '#src/types'
+import { CustomValidations } from '#src/validator/CustomValidations'
 import { ValidationException } from '#src/exceptions/ValidationException'
-
-type UniqueOptions = {
-  /**
-   * The table where the database will lookup for the data.
-   */
-  table: string
-
-  /**
-   * The column name in database. If not defined, the name
-   * of the field in the schema will be used.
-   *
-   * @default 'fieldNameInYourSchema'
-   */
-  column?: string
-
-  /**
-   * Use the max field to stablish a max limit for your validation.
-   * In some cases in your database you might have a max of 10 tuples
-   * with the same data. Use this option to validate that the number
-   * of fields registered in database cannot be bigger than the number
-   * defined on this option.
-   *
-   * @example
-   * ```ts
-   * const schema = this.validator.object({
-   *   name: this.validator.string().unique({ table: 'users', max: 10 })
-   * })
-   *
-   * const data = { name: 'lenon' }
-   *
-   * // Will throw if there are 10 users with name `lenon`
-   * // created in database
-   * await this.validator.validate({ schema: this.schema, data })
-   * ```
-   * @default undefined
-   */
-  max?: number
-}
 
 declare module '@vinejs/vine' {
   interface VineString {
     unique(options: UniqueOptions): this
+    exists(options: ExistsOptions): this
   }
 }
 
@@ -81,44 +46,8 @@ export class ValidatorProvider extends ServiceProvider {
       return
     }
 
-    const DB = ioc.safeUse('Athenna/Core/Database')
-
-    Validate.extend().string('unique', async (value, options, field) => {
-      /**
-       * We do not want to deal with non-string
-       * values. The "string" rule will handle the
-       * the validation.
-       */
-      if (!Is.String(value)) {
-        return
-      }
-
-      if (!options.column) {
-        options.column = field.name as string
-      }
-
-      if (options.max) {
-        const rows = await DB.table(options.table)
-          .select(options.column)
-          .where(options.column, value)
-          .findMany()
-
-        if (rows.length > options.max) {
-          field.report('The {{ field }} field is not unique', 'unique', field)
-        }
-
-        return
-      }
-
-      const existsRow = await DB.table(options.table)
-        .select(options.column)
-        .where(options.column, value)
-        .exists()
-
-      if (existsRow) {
-        field.report('The {{ field }} field is not unique', 'unique', field)
-      }
-    })
+    CustomValidations.registerUnique()
+    CustomValidations.registerExists()
   }
 
   public async registerValidators() {

@@ -14,4 +14,7 @@ import type {
 } from '@vinejs/vine/types'
 
 export * from '#src/types/ExtendHandler'
+export * from '#src/types/ExtendReturnType'
+export * from '#src/types/validators/ExistsOptions'
+export * from '#src/types/validators/UniqueOptions'
 export type { FieldContext, SchemaTypes, ErrorReporterContract }

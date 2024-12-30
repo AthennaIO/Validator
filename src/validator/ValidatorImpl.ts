@@ -10,7 +10,7 @@
 /* eslint-disable no-use-before-define */
 
 import {
-  vine,
+  v,
   Vine,
   VineAccepted,
   VineAny,
@@ -26,22 +26,13 @@ import {
   VineTuple
 } from '#src'
 
-import type { ExtendHandlerType } from '#src/types'
-
-type ExtendReturnType = {
-  accepted: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  date: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  record: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  tuple: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  literal: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  array: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  any: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  string: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  number: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  enum: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  boolean: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-  object: (name: string, handler: ExtendHandlerType) => ValidatorImpl
-}
+import type {
+  SchemaTypes,
+  ExtendReturnType,
+  ExtendHandlerType
+} from '#src/types'
+import { SimpleMessagesProvider } from '@vinejs/vine'
+import type { Infer, ValidationOptions } from '@vinejs/vine/types'
 
 export class ValidatorImpl {
   /**
@@ -49,34 +40,49 @@ export class ValidatorImpl {
    * build your validation schemas:
    *
    * ```ts
-   * const schema = Validate.schema.object({
-   *   name: Validate.schema.string(),
-   *   email: Validate.schema.string().email(),
-   *   password: Validate.schema.string().minLength(8).maxLength(32).confirmed()
+   * const schema = v.object({
+   *   name: v.string(),
+   *   email: v.string().email(),
+   *   password: v.string().minLength(8).maxLength(32).confirmed()
    * })
    * ```
    */
   public get schema(): Vine {
-    return vine
+    return v
+  }
+
+  /**
+   * Validate data by passing a schema and data. Also
+   * accepts other fields such as message provider
+   * and error reporter.
+   *
+   * ```ts
+   * const data = { name: 'Lenon' }
+   * const schema = v.object({ name: v.string() })
+   *
+   * await v.validate({ schema, data })
+   * ```
+   */
+  public async validate(
+    options: { schema: SchemaTypes; data: any } & ValidationOptions<
+      Record<string, any> | undefined
+    >
+  ): Promise<Infer<SchemaTypes>> {
+    return v.validate(options)
   }
 
   /**
    * Extend vine validation schema by adding new
-   * validation rules:
+   * validation rules or add custom messages:
    *
    * ```ts
-   * Validate.extend().string('unique', (value, options, field) => {
-   *   if (!options.column) {
-   *     options.column = field.name as string
+   * Validate.extend().string('lenon', (value, options, field) => {
+   *   if (!Is.String(value)) {
+   *     return
    *   }
    *
-   *   const existsRow = await Database.table(options.table)
-   *     .select(options.column)
-   *     .where(options.column, value)
-   *     .exists()
-   *
-   *   if (existsRow) {
-   *     field.report('The {{ field }} field is not unique', 'unique', field)
+   *   if (value !== 'lenon') {
+   *     field.report('The {{ field }} field value is not lenon', 'lenon', field)
    *   }
    * })
    * ```
@@ -87,9 +93,14 @@ export class ValidatorImpl {
     }
 
     return {
+      messages: (messages: Record<string, string>) => {
+        v.messagesProvider = new SimpleMessagesProvider(messages)
+
+        return this
+      },
       accepted: (name: string, handler: ExtendHandlerType) => {
         macro(VineAccepted, name, function (this: VineAccepted, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -97,7 +108,7 @@ export class ValidatorImpl {
       },
       date: (name: string, handler: ExtendHandlerType) => {
         macro(VineDate, name, function (this: VineDate, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -105,7 +116,7 @@ export class ValidatorImpl {
       },
       record: (name: string, handler: ExtendHandlerType) => {
         macro(VineRecord, name, function (this: VineRecord<any>, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -113,7 +124,7 @@ export class ValidatorImpl {
       },
       tuple: (name: string, handler: ExtendHandlerType) => {
         macro(VineTuple, name, function (this: any, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -121,7 +132,7 @@ export class ValidatorImpl {
       },
       literal: (name: string, handler: ExtendHandlerType) => {
         macro(VineLiteral, name, function (this: VineLiteral<any>, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -129,7 +140,7 @@ export class ValidatorImpl {
       },
       array: (name: string, handler: ExtendHandlerType) => {
         macro(VineArray, name, function (this: VineArray<any>, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -137,7 +148,7 @@ export class ValidatorImpl {
       },
       any: (name: string, handler: ExtendHandlerType) => {
         macro(VineAny, name, function (this: VineAny, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -145,7 +156,7 @@ export class ValidatorImpl {
       },
       string: (name: string, handler: ExtendHandlerType) => {
         macro(VineString, name, function (this: VineString, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -153,7 +164,7 @@ export class ValidatorImpl {
       },
       number: (name: string, handler: ExtendHandlerType) => {
         macro(VineNumber, name, function (this: VineNumber, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -161,7 +172,7 @@ export class ValidatorImpl {
       },
       enum: (name: string, handler: ExtendHandlerType) => {
         macro(VineEnum, name, function (this: VineEnum<any>, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -169,7 +180,7 @@ export class ValidatorImpl {
       },
       boolean: (name: string, handler: ExtendHandlerType) => {
         macro(VineBoolean, name, function (this: VineBoolean, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
@@ -177,7 +188,7 @@ export class ValidatorImpl {
       },
       object: (name: string, handler: ExtendHandlerType) => {
         macro(VineObject, name, function (this: any, opt: any) {
-          const rule = vine.createRule(handler)
+          const rule = v.createRule(handler)
           return this.use(rule(opt))
         })
 
