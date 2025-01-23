@@ -31,10 +31,11 @@ import type {
   ExtendReturnType,
   ExtendHandlerType
 } from '#src/types'
+import { Macroable } from '@athenna/common'
 import { SimpleMessagesProvider } from '@vinejs/vine'
 import type { Infer, ValidationOptions } from '@vinejs/vine/types'
 
-export class ValidatorImpl {
+export class ValidatorImpl extends Macroable {
   /**
    * This getter will return the vine instance to
    * build your validation schemas:
